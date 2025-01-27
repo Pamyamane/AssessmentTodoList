@@ -1,0 +1,43 @@
+.table-container {
+    border: 2px solid #cecbcb;
+    border-radius: 8px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    overflow-x: auto; 
+    width: 100%; 
+    box-sizing: border-box;
+  }
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+
+.with-icon {
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px 40px 10px 10px; 
+    width: 100%;
+    font-size: 16px;
+    color: #333;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    cursor: pointer;
+}
+
+
+.with-icon:hover {
+    border-color: #007bff;
+}
+
+.menuimg {
+  width: 50px; 
+  height: auto; 
+}
