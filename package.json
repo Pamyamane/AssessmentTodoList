@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "EnzigmaTask",
+=======
+  "name": "task",
+>>>>>>> fc6c3137e1dc75de629e3f980581a5e364540fb7
   "version": "0.1.0",
   "private": true,
   "dependencies": {
