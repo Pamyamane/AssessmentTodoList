@@ -5,7 +5,7 @@ This project is a task management application built with React. It allows users 
 ## Available Scripts
 
 In the project directory, you can run:
-
+### `npm install`
 ### `npm start`
 
 Runs the app in the development mode.\
