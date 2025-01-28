@@ -1,11 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import DeleteModal from "./Modal/DeleteModal";
-import menu from "./Images/menu.png"
-import AddIcon from '@mui/icons-material/Add';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import menu from "./Images/menu.png";
+import AddIcon from "@mui/icons-material/Add";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { Pagination } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SearchIcon from "@mui/icons-material/Search";
 
 const TaskList = () => {
   const [users, setUsers] = useState([]);
@@ -14,7 +34,6 @@ const TaskList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 5;
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +54,9 @@ const TaskList = () => {
         user.name.toLowerCase().includes(event.target.value.toLowerCase()) ||
         user.status.toLowerCase().includes(event.target.value.toLowerCase()) ||
         user.dueDate.toLowerCase().includes(event.target.value.toLowerCase()) ||
-        user.priority.toLowerCase().includes(event.target.value.toLowerCase()) ||
+        user.priority
+          .toLowerCase()
+          .includes(event.target.value.toLowerCase()) ||
         user.comments.toLowerCase().includes(event.target.value.toLowerCase())
     );
 
@@ -59,20 +80,20 @@ const TaskList = () => {
     if (selectedTask) {
       await axios.delete(`http://localhost:5003/users/${selectedTask.id}`);
       LoadUsers();
+
       const modal = window.bootstrap.Modal.getInstance(
         document.getElementById("deleteModal")
       );
       modal.hide();
+
       Swal.fire({
         title: "Task Deleted Successfully!",
         icon: "success",
-        buttons: false,
         timer: 2000,
       });
     }
   };
 
-  // Pagination 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = record.slice(indexOfFirstRecord, indexOfLastRecord);
@@ -81,146 +102,181 @@ const TaskList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { year: "numeric", month: "short", day: "numeric" };
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', options);
+    return date.toLocaleDateString("en-GB", options);
   };
 
+  const handleEdit = (id) => {
+    navigate(`/EditTaskForm/${id}`);
+  };
 
-  const handelEdit = (id) => {
-    navigate(`/EditTaskForm/${id}`); // Redirect to the edit form with the task ID
+  const handleAdd = () => {
+    navigate(`/TaskForm`);
   };
 
   return (
-    <div>
-      <div className="container">
-        <div className="d-flex align-items-center justify-content-start mt-5">
-          <img src={menu} alt="Menu" className="me-3 menuimg" />
-          <h3>Task List</h3>
-        </div>
-        <div className="mt-5">
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="form-group col-md-6 col-sm-12 mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={handleSearch}
-              />
-            </div>
-            <div className="d-flex">
-              <Link to="/TaskForm" className="btn btn-primary mb-3 me-2">
-                <AddIcon /> New Task
-              </Link>
-              <button onClick={handleRefresh} style={{ backgroundColor: '#fcf07e' }} className="btn mb-3">
-                <RefreshIcon /> Refresh
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="mt-2 ms-2">
-          <h6>Records : {record.length}</h6>
-        </div>
-        <div className="table-container">
-          <div className="table-responsive">
-            <table className="table table-striped">
-              <thead style={{ color: "#8591ab" }}>
-                <tr>
-                  <th scope="col">
-                    <input type="checkbox" />
-                  </th >
-                  <th scope="col">Assigned To</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Due Date</th>
-                  <th scope="col">Priority</th>
-                  <th scope="col">Comments</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentRecords.map((user) => (
-                  <tr key={user.id}>
-                    <th scope="row">
-                      <input type="checkbox" />
-                    </th>
-                    <td style={{ color: "#0778db" }}>{user.name}</td>
-                    <td>{user.status}</td>
-                    <td>{formatDate(user.dueDate)}</td>
-                    <td>{user.priority}</td>
-                    <td>{user.comments}</td>
-                    <td>
-                      <div className="dropdown">
-                        <button
-                          className="btn dropdown-toggle"
-                          type="button"
-                          id={`dropdownMenuButton${user.id}`}
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                          style={{ backgroundColor: '#fcf07e' }}
-                        >
+    <Box sx={{ p: 3 }}>
+      {/* Header */}
+      <Grid container alignItems="center" spacing={2} sx={{ mb: 4 }}>
+        <Grid item xs={12} md={6}>
+          <Box display="flex" alignItems="center">
+            <img
+              src={menu}
+              alt="Menu"
+              style={{
+                borderRadius: "50%",
+                width: "40px",
+                marginRight: "15px",
+              }}
+            />
+            <Typography
+              variant="h4"
+              sx={{ color: "#0778db", fontWeight: "bold" }}
+            >
+              Task List
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6} display="flex" justifyContent="flex-end">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAdd}
+            sx={{ textTransform: "none", borderRadius: "20px", mr: 2 }}
+          >
+            New Task
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<RefreshIcon />}
+            onClick={handleRefresh}
+            sx={{ textTransform: "none", borderRadius: "20px" }}
+          >
+            Refresh
+          </Button>
+        </Grid>
+      </Grid>
 
-                        </button>
-                        <ul
-                          className="dropdown-menu"
-                          aria-labelledby={`dropdownMenuButton${user.id}`}
-                        >
-                          <li>
-                            <a
-                              className="dropdown-item"
-                              href="#"
-                              onClick={() => handelEdit(user.id)}
-                            >
-                              Edit
-                            </a>
-                          </li>
-                          <li>
-                            <button
-                              className="dropdown-item text-danger"
-                              onClick={() => openDeleteModal(user)}
-                            >
-                              Delete
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      {/* Search Field */}
+      <Box sx={{ mb: 4 }}>
+        <TextField
+          fullWidth
+          label="Search..."
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearch}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          sx={{ maxWidth: "600px", mx: "auto" }}
+        />
+      </Box>
 
-      {/* Use the DeleteModal Component */}
+      {/* Task Table */}
+      <TableContainer
+        sx={{
+          boxShadow: 3,
+          borderRadius: 2,
+          overflowX: "auto",
+          backgroundColor: "#fff",
+        }}
+      >
+        <Table>
+          <TableHead sx={{ backgroundColor: "#0077b5" }}>
+            {" "}
+            {/* LinkedIn Blue Color */}
+            <TableRow>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Select
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Assigned To
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Status
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Due Date
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Priority
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Comments
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Edit
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>
+                Delete
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {currentRecords.map((user) => (
+              <TableRow
+                key={user.id}
+                sx={{
+                  "&:hover": { backgroundColor: "#f9f9f9" },
+                }}
+              >
+                <TableCell>
+                  <input type="checkbox" />
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{user.name}</TableCell>{" "}
+                {/* Slightly bold text */}
+                <TableCell sx={{ fontWeight: "bold" }}>{user.status}</TableCell>
+                <TableCell>{formatDate(user.dueDate)}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>
+                  {user.priority}
+                </TableCell>
+                <TableCell>{user.comments}</TableCell>
+                <TableCell>
+                  <Tooltip title="Edit">
+                    <EditIcon
+                      sx={{ cursor: "pointer" }}
+                      color="primary"
+                      onClick={() => handleEdit(user.id)}
+                    />
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip title="Delete">
+                    <DeleteIcon
+                      sx={{ cursor: "pointer" }}
+                      color="error"
+                      onClick={() => openDeleteModal(user)}
+                    />
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       <DeleteModal selectedTask={selectedTask} handleDelete={handleDelete} />
 
-      <nav aria-label="Page navigation example">
-        <ul className="pagination mt-4 justify-content-center">
-          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-            <button className="page-link" onClick={() => paginate(currentPage - 1)}>
-              Previous
-            </button>
-          </li>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <li
-              key={index}
-              className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
-            >
-              <button className="page-link" onClick={() => paginate(index + 1)}>
-                {index + 1}
-              </button>
-            </li>
-          ))}
-          <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-            <button className="page-link" onClick={() => paginate(currentPage + 1)}>
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </div>
+      {/* Pagination */}
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(e, page) => paginate(page)}
+          shape="rounded"
+          color="primary"
+        />
+      </Box>
+    </Box>
   );
 };
 

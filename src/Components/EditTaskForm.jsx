@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import {
+    TextField,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
+    Button,
+    Grid,
+    FormHelperText,
+    Box,
+} from "@mui/material";
 
 const EditTaskForm = () => {
     const { id } = useParams(); // Get the task ID from the URL
@@ -89,8 +100,8 @@ const EditTaskForm = () => {
         await axios.put(`http://localhost:5003/users/${id}`, formData);
         navigate("/"); // Redirect back to the task list
         Swal.fire({
-            title: 'Task Updated Successfully!',
-            icon: 'success',
+            title: "Task Updated Successfully!",
+            icon: "success",
             buttons: false,
             timer: 2000,
         });
@@ -101,120 +112,117 @@ const EditTaskForm = () => {
     };
 
     return (
-        <div className="container">
+        <Box className="container" sx={{ width: "100%", padding: 3 }}>
             <h3 className="text-center mt-5">Edit Task</h3>
             <form onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="form-group col-md-6 col-sm-12 mt-3">
-                        <label htmlFor="name" className="form-label">
-                            <span style={{ color: "red" }}>*</span> Assigned To
-                        </label>
-                        <select
-                            className="form-control with-icon"
-                            id="name"
-                            onChange={(e) => handleAssignedToChange(e.target.value)}
-                            required
-                        >
-                            <option value="">Select User</option>
-                            {assignedToOptions.map((item) => (
-                                <option
-                                    key={item.id}
-                                    value={item.id}
-                                    selected={formData.name === item.Name}
-                                >
-                                    {item.Name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                <Grid container spacing={3}>
+                    {/* Assigned To */}
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Assigned To</InputLabel>
+                            <Select
+                                value={formData.name}
+                                name="name"
+                                onChange={(e) => handleAssignedToChange(e.target.value)}
+                                label="Assigned To"
+                                required
+                            >
+                                <MenuItem value="">Select User</MenuItem>
+                                {assignedToOptions.map((item) => (
+                                    <MenuItem key={item.id} value={item.Name}>
+                                        {item.Name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="form-group col-md-6 col-sm-12 mt-3">
-                        <label htmlFor="status" className="form-label">
-                            <span style={{ color: "red" }}>*</span> Status
-                        </label>
-                        <select
-                            className="form-control with-icon"
-                            id="status"
-                            onChange={(e) => handleStatusChange(e.target.value)}
-                            required
-                        >
-                            <option value="">Select Status</option>
-                            {statusOptions.map((item) => (
-                                <option
-                                    key={item.id}
-                                    value={item.id}
-                                    selected={formData.status === item.Name}
-                                >
-                                    {item.Name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {/* Status */}
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                                value={formData.status}
+                                name="status"
+                                onChange={(e) => handleStatusChange(e.target.value)}
+                                label="Status"
+                                required
+                            >
+                                <MenuItem value="">Select Status</MenuItem>
+                                {statusOptions.map((item) => (
+                                    <MenuItem key={item.id} value={item.Name}>
+                                        {item.Name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="form-group col-md-6 col-sm-12 mt-3">
-                        <label htmlFor="dueDate" className="form-label">
-                            <span style={{ color: "red" }}>*</span> Due Date
-                        </label>
-                        <input
+                    {/* Due Date */}
+                    <Grid item xs={12} sm={6}>
+                        <TextField
                             type="date"
-                            className="form-control"
-                            id="dueDate"
-                            name="dueDate"
+                            label="Due Date"
                             value={formData.dueDate}
+                            name="dueDate"
                             onChange={handleChange}
-                            min={new Date().toISOString().split("T")[0]}
+                            fullWidth
                             required
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            inputProps={{
+                                min: new Date().toISOString().split("T")[0],
+                            }}
                         />
-                    </div>
+                    </Grid>
 
-                    <div className="form-group col-md-6 col-sm-12 mt-3">
-                        <label htmlFor="priority" className="form-label">
-                            <span style={{ color: "red" }}>*</span> Priority
-                        </label>
-                        <select
-                            className="form-control with-icon"
-                            id="priority"
-                            onChange={(e) => handlePriorityChange(e.target.value)}
-                            required
-                        >
-                            <option value="">Select Priority</option>
-                            {priorityOptions.map((item) => (
-                                <option
-                                    key={item.id}
-                                    value={item.id}
-                                    selected={formData.priority === item.Name}
-                                >
-                                    {item.Name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {/* Priority */}
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Priority</InputLabel>
+                            <Select
+                                value={formData.priority}
+                                name="priority"
+                                onChange={(e) => handlePriorityChange(e.target.value)}
+                                label="Priority"
+                                required
+                            >
+                                <MenuItem value="">Select Priority</MenuItem>
+                                {priorityOptions.map((item) => (
+                                    <MenuItem key={item.id} value={item.Name}>
+                                        {item.Name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="form-group col-md-12 col-sm-12 mt-3">
-                        <label htmlFor="comments" className="form-label">
-                            <span style={{ color: "red" }}>*</span> Description
-                        </label>
-                        <textarea
-                            className="form-control"
-                            id="comments"
-                            name="comments"
+                    {/* Description */}
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Description"
+                            multiline
+                            rows={4}
                             value={formData.comments}
+                            name="comments"
                             onChange={handleChange}
+                            fullWidth
                             required
                         />
-                    </div>
-                </div>
+                    </Grid>
+                </Grid>
 
-                <div className="d-flex mt-3">
-                    <button type="button" onClick={handleCancel} className="btn btn-secondary">
+                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+                    <Button onClick={handleCancel} variant="outlined" color="secondary" sx={{ mr: 2 }}>
                         Cancel
-                    </button>
-                    <button type="submit" className="btn btn-success ms-3">
+                    </Button>
+                    <Button type="submit" variant="contained" color="primary">
                         Update
-                    </button>
-                </div>
+                    </Button>
+                </Box>
             </form>
-        </div>
+        </Box>
     );
 };
 
