@@ -182,6 +182,9 @@ const TaskList = () => {
       </Box>
 
       {/* Task Table */}
+      <span>
+        <h6>Records : {record.length}</h6>
+      </span>
       <TableContainer
         sx={{
           boxShadow: 3,
